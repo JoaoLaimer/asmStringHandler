@@ -1,32 +1,34 @@
 .data
-	string: .asciiz "Gosto muito do meu professor de AOC-I."
+	string: .asciiz "        oi      essa      string     esta       errada      e um teste  "
 
 .text
-	addi $t1, $t1, 32
-	la $a0, string
-	lb $t2, 0($a0)
+	addi $a1, $a1, 32 # a1 espaco
+	la $a0, string # a0 endereco da string
+	lb $t8, 0($a0) # t8 primeira letra
 LOOP:	
-
-	and $t9, $t9 , $zero
-	lb $t2, 0($a0) 
-	beq $t2, $zero, FIM
-	beq $t2, $t1, ESPACO
+	lb $t8, 0($a0) 
+	beq $t8, $zero, FIM
+	beq $t8, $a1, ESPACO
 	addi $a0 , $a0, 1
 	j LOOP
+	
 ESPACO:
-	add $t9, $zero, $a0
-	la $t4, 0($t9)
-	la $t3, 1($t9)
+	la $t4, 0($a0) #t4 end do espaco
+	la $t3, 1($t4) #t3 dpois do espaco
+	
 ESPACOLOOP:
-	lb $t5, 0($t3)
-	sb $t5, 0($t4)
+	lb $t9, 0($t3) #t9 load letra
+	sb $t9, 0($t4) #t9 store letra um endereco atras
 	addi $t3, $t3, 1
 	addi $t4, $t4, 1
-	beq $t5, $zero, LOOP
+	beq $t9, $zero, LOOP
 	j ESPACOLOOP
 FIM:
+	
 	li $v0 , 4
+	la $v1 , string
 	la, $a0, string
 	syscall
+	#jr $ra
 	
 	
