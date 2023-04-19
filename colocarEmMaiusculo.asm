@@ -13,12 +13,17 @@
 loop:
 	lbu 	$s0, ($t1)		#Le o primeiro caractere da string no registrador $s1
 	beq 	$s0, $zero, fim		#Verifica se o caractere não é vazio, se for pula para o final do código, se não
-	blt 	$s0, 97, iteração	#Se for menor que 97, não é um caracter válido e pula para o proximo caractere
+	blt 	$s0, 97, letraMaiuscula	#Se for menor que 97, não é um caracter válido e pula para o proximo caractere
 	bgt 	$s0, 122, iteração	#Se for maior que 122, não é um caracter válido e pula para o proximo caractere
 	addi 	$s0, $s0, -32		#Substrai -32 para colocar a letra em maiusculo
 	sb 	$s0, ($t0)		#Salva o valor de $s0 em $a0
 	j iteração			#Pula para a interação
-	j loop				#Volta para o laço de repetição
+	
+letraMaiuscula:
+	blt 	$s0, 65, iteração
+	bgt 	$s0, 90, iteração
+	sb 	$s0, ($t0)
+	j iteração
 	
 iteração:
 	addi 	$t0, $t0, 1		#Incrementa em 1 o valor na memória para ir para o próximo caracter 
