@@ -2,7 +2,10 @@
 	#Variaveis menu
 	menu: 		.asciiz "\n-----------ASM.STRING.HANDLER-----------\n (1) Colocar todas letras em minuscula;\n (2) Colocar todas letras em maiuscula;\n (3) Inverter string\n (4) Capitalizar string;\n (5) Remover espaço(s) de uma string;\n (6) Verificar se é substring;\n (7) Sair;\n Digite sua uma opção:"
 	#Variaveis para uso da string
+	achou: .asciiz "e substring"
+	nachou: .asciiz "nao e substring"
 	stringAlterada: .space 100	#Tamanho do espaço de memória para a string
+<<<<<<< HEAD
 	entradaString: .space 100  
 	substring: .space 100
 	#Variaveis de mensagens
@@ -10,6 +13,11 @@
 	retornoString: .asciiz "String alterada: "
 	éSubstringMensagem: .asciiz "é substring"
 	ñSubstringMensagem: .asciiz "nao é substring"
+=======
+	entradaString: .space 50
+	substring: .space 50
+	
+>>>>>>> 3a2e6ab07e76c0e7c27c0042acc1d7e17173c24d
 	#################
 .text
 	li $s1, 1  			#Opção de saída do menu
@@ -253,16 +261,24 @@ OPÇÃO6:
 	syscall 
 	li 	$v0, 8			#Código do syscall de leitura de string
 	la 	$a0, entradaString	#Salva a string no endereço $a0
+<<<<<<< HEAD
 	li	$a1, 50			#Tamanho da string
 	syscall 
 	#Print mensagem
 	li $v0, 4
 	la $a0, digitarString
+=======
+	li	$a1, 50		#Tamanho da string
+>>>>>>> 3a2e6ab07e76c0e7c27c0042acc1d7e17173c24d
 	syscall 
 	lb $t0, ($a0)
 	li 	$v0, 8			#Código do syscall de leitura de string
 	la 	$a0, substring		#Salva a string no endereço $a0
+<<<<<<< HEAD
 	li	$a1, 50			#Tamanho da string
+=======
+	li	$a1, 50		#Tamanho da string
+>>>>>>> 3a2e6ab07e76c0e7c27c0042acc1d7e17173c24d
 	syscall
 	la $a2, substring
 	la $a1, entradaString
@@ -276,11 +292,19 @@ OPÇÃO6:
 	PRIMEIRA_LETRA_IGUAL:
 		la $a3, 1($a1)		#Da um load do caractere em $ao para $a3
 	ACHOU:				
+<<<<<<< HEAD
 		addi $a1, $a1, 1 		#Incrementa para o próximo caractere
 		addi $a2, $a2, 1		#Incrementa para o próximo caractere
 		lb $t0, ($a1)			#Da um load do caractere em $t0
 		lb $t1, ($a2)			#Da um load do caractere em $t1
 		beq $t1, 10, É_SUBSTRING	#Se chegou no final da string pula para É_SUBSTRING
+=======
+		addi $a1, $a1, 1 	#Incrementa para o próximo caractere
+		addi $a2, $a2, 1	#Incrementa para o próximo caractere
+		lb $t0, ($a1)		#Da um load do caractere em $t0
+		lb $t1, ($a2)		#Da um load do caractere em $t1
+		beq $t1, 10, É_SUBSTRING		#Se chegou no final da string pula para É_SUBSTRING
+>>>>>>> 3a2e6ab07e76c0e7c27c0042acc1d7e17173c24d
 		beq $t0, 10, NAO_É_SUBSTRING	#Se o caractere em $t0 é nulo, pula para NÃO_É_SUBSTRING
 		bne $t0, $t1, NÃO_ACHOU		#Se %t0 e $t1 são diferente pula para NÃO_ACHOU
 		j ACHOU				#Loop do achou
