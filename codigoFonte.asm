@@ -3,11 +3,12 @@
 	menu: 		.asciiz "\n-----MENU-----\n (1) Colocar todas letras em minuscula;\n (2) Colocar todas letras em maiuscula;\n (3) Inverter string\n (4) Capitalizar string;\n (5) Remover espaço(s) de uma string;\n (6) Verificar se é substring;\n (7) Sair;\n"
 	opçãoMenu: 	.asciiz "Digite sua uma opção:"
 	#Variaveis para uso da string
+	achou: .asciiz "e substring"
+	nachou: .asciiz "nao e substring"
 	stringAlterada: .space 100	#Tamanho do espaço de memória para a string
-	entradaString: .space 100  
-	substring: .space 100
-	achou: .asciiz "é substring"
-	nachou: .asciiz "nao é substring"
+	entradaString: .space 50
+	substring: .space 50
+	
 	#################
 .text
 	li $s1, 1  			#Opção de saída do menu
@@ -207,34 +208,36 @@ OPÇÃO5:
 OPÇÃO6:
 	li 	$v0, 8			#Código do syscall de leitura de string
 	la 	$a0, entradaString	#Salva a string no endereço $a0
-	li	$a1, 100		#Tamanho da string
+	li	$a1, 50		#Tamanho da string
 	syscall 
 	lb $t0, ($a0)
 	li 	$v0, 8			#Código do syscall de leitura de string
-	la 	$a2, substring		#Salva a string no endereço $a0
-	li	$a1, 100		#Tamanho da string
+	la 	$a0, substring		#Salva a string no endereço $a0
+	li	$a1, 50		#Tamanho da string
 	syscall
+	la $a2, substring
+	la $a1, entradaString
 	lb $t1, ($a2)		#Salva em $t1 o primeiro caractere de $a2 (substring)
 	PERCORRE_STRING:
-		lb $t0, ($a0)				#Salva em $t0 um caractere de $a0
+		lb $t0, ($a1)				#Salva em $t0 um caractere de $a0
 		beq $t0, $t1, PRIMEIRA_LETRA_IGUAL	#Se o caractere de $t0 for igual ao de $t1 pula para o PRIMEIRA_LETRA_IGUAL
-		beq $t0, 0, NAO_É_SUBSTRING		#Se $t0 for nulo, pula para não é uma substring
-		addi $a0, $a0, 1 
+		beq $t0, 10, NAO_É_SUBSTRING		#Se $t0 for nulo, pula para não é uma substring
+		addi $a1, $a1, 1 
 		j PERCORRE_STRING
 	PRIMEIRA_LETRA_IGUAL:
-		la $a3, 1($a0)		#Da um load do caractere em $ao para $a3
+		la $a3, 1($a1)		#Da um load do caractere em $ao para $a3
 	ACHOU:				
-		addi $a0, $a0, 1 	#Incrementa para o próximo caractere
+		addi $a1, $a1, 1 	#Incrementa para o próximo caractere
 		addi $a2, $a2, 1	#Incrementa para o próximo caractere
-		lb $t0, ($a0)		#Da um load do caractere em $t0
+		lb $t0, ($a1)		#Da um load do caractere em $t0
 		lb $t1, ($a2)		#Da um load do caractere em $t1
-		beq $t1, 0, É_SUBSTRING		#Se chegou no final da string pula para É_SUBSTRING
-		beq $t0, 0, NAO_É_SUBSTRING	#Se o caractere em $t0 é nulo, pula para NÃO_É_SUBSTRING
+		beq $t1, 10, É_SUBSTRING		#Se chegou no final da string pula para É_SUBSTRING
+		beq $t0, 10, NAO_É_SUBSTRING	#Se o caractere em $t0 é nulo, pula para NÃO_É_SUBSTRING
 		bne $t0, $t1, NÃO_ACHOU		#Se %t0 e $t1 são diferente pula para NÃO_ACHOU
 		j ACHOU				#Loop do achou
 		
 	NÃO_ACHOU:
-		la $a0, 0($a3)
+		la $a1, 0($a3)
 		la $a2, substring
 		lb $t1, ($a2)
 		j PERCORRE_STRING	
