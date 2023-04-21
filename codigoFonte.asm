@@ -1,13 +1,15 @@
 .data 
 	#Variaveis menu
-	menu: 		.asciiz "\n-----MENU-----\n (1) Colocar todas letras em minuscula;\n (2) Colocar todas letras em maiuscula;\n (3) Inverter string\n (4) Capitalizar string;\n (5) Remover espaço(s) de uma string;\n (6) Verificar se é substring;\n (7) Sair;\n"
-	opçãoMenu: 	.asciiz "Digite sua uma opção:"
+	menu: 		.asciiz "\n-----------ASM.STRING.HANDLER-----------\n (1) Colocar todas letras em minuscula;\n (2) Colocar todas letras em maiuscula;\n (3) Inverter string\n (4) Capitalizar string;\n (5) Remover espaço(s) de uma string;\n (6) Verificar se é substring;\n (7) Sair;\n Digite sua uma opção:"
 	#Variaveis para uso da string
 	stringAlterada: .space 100	#Tamanho do espaço de memória para a string
 	entradaString: .space 100  
 	substring: .space 100
-	achou: .asciiz "é substring"
-	nachou: .asciiz "nao é substring"
+	#Variaveis de mensagens
+	digitarString: .asciiz "Digite uma string: "
+	retornoString: .asciiz "String alterada: "
+	éSubstringMensagem: .asciiz "é substring"
+	ñSubstringMensagem: .asciiz "nao é substring"
 	#################
 .text
 	li $s1, 1  			#Opção de saída do menu
@@ -22,26 +24,25 @@ LOOP_MENU:
 	li $v0, 4
 	la $a0, menu
 	syscall 		#Print menu
-		
-	li $v0, 4
-	la $a0, opçãoMenu
-	syscall			#Print opçãoSair
-		
+	
 	li $v0, 5
 	syscall
 		
 	#Verificações da opção escolhida
-	beq $v0, $s1, OPÇÃO1	#Se $t1 = 1, pula para a opção 1
-	beq $v0, $s2, OPÇÃO2	#Se $t1 = 2, pula para a opção 2
-	beq $v0, $s3, OPÇÃO3	#Se $t1 = 3, pula para a opção 3
-	beq $v0, $s4, OPÇÃO4	#Se $t1 = 4, pula para a opção 4
-	beq $v0, $s5, OPÇÃO5	#Se $t1 = 5, pula para a opção 5
-	beq $v0, $s6, OPÇÃO6	#Se $t1 = 6, pula para a opção 6
-	#beq $v0, $s7, OPÇÃO7	#Se $t1 = 7, pula para a opção 7
-	beq $v0, $s7, FIM	#Se $t1 = 7, pula para o fim do program
+	beq $v0, $s1, OPÇÃO1	#Se $v0 = 1, pula para a opção 1
+	beq $v0, $s2, OPÇÃO2	#Se $v0 = 2, pula para a opção 2
+	beq $v0, $s3, OPÇÃO3	#Se $v0 = 3, pula para a opção 3
+	beq $v0, $s4, OPÇÃO4	#Se $v0 = 4, pula para a opção 4
+	beq $v0, $s5, OPÇÃO5	#Se $v0 = 5, pula para a opção 5
+	beq $v0, $s6, OPÇÃO6	#Se $v0 = 6, pula para a opção 6
+	beq $v0, $s7, FIM	#Se $v0 = 7, pula para o fim do program
 	j LOOP_MENU	
 		
 OPÇÃO1:
+	li $v0, 4
+	la $a0, digitarString
+	syscall 		#Print mensagem
+	
 	li 	$v0, 8			#Código do syscall de leitura de string
 	la 	$a0, entradaString	#Salva a string 
 	li	$a1, 100		#Tamanho da string
@@ -67,12 +68,21 @@ OPÇÃO1:
 		addi 	$t1, $t1, 1
 		j LOOP_OPÇÃO1
 	
-	FIM_OPÇÃO1:					#imprime a string alterada
+	FIM_OPÇÃO1:
+		#Print mensagem
+		li $v0, 4
+		la $a0, retornoString
+		syscall 		
+		#imprime a string alterada
 		li 	$v0, 4
 		la 	$a0, stringAlterada
 		syscall 
 		j LOOP_MENU
 OPÇÃO2: 
+	#Print mensagem
+	li $v0, 4
+	la $a0, digitarString
+	syscall 		
 	li 	$v0, 8			#Código do syscall de leitura de string
 	la 	$a0, entradaString	#Salva a string 
 	li	$a1, 100		#Tamanho da string
@@ -101,12 +111,21 @@ OPÇÃO2:
 		addi 	$t1, $t1, 1
 		j loop
 	
-	FIM_OPÇÃO2:			#imprime a string alterada
+	FIM_OPÇÃO2:
+		#Print mensagem
+		li $v0, 4
+		la $a0, retornoString
+		syscall 
+		#imprime a string alterada
 		li 	$v0, 4
 		la 	$a0, stringAlterada
 		syscall
 		j LOOP_MENU
 OPÇÃO3:
+	#Print mensagem
+	li $v0, 4
+	la $a0, digitarString
+	syscall 
 	li 	$v0, 8			#Código do syscall de leitura de string
 	la 	$a0, entradaString	#Salva a string 
 	li	$a1, 100		#Tamanho da string
@@ -132,12 +151,21 @@ OPÇÃO3:
 		addi $a0, $a0, 1	#Incrementa em 1 o endereço da string para ir para o próximo caractere
 		j DESTACK_LOOP
 		
-	FIM_OPÇÃO3:			#imprime a string alterada
+	FIM_OPÇÃO3:	
+		#Print mensagem
+		li $v0, 4
+		la $a0, retornoString
+		syscall 
+		#imprime a string alterada
 		li $v0, 4
 		la $a0, stringAlterada
 		syscall
 		j LOOP_MENU
 OPÇÃO4:
+	#Print mensagem
+	li $v0, 4
+	la $a0, digitarString
+	syscall 
 	li 	$v0, 8			#Código do syscall de leitura de string
 	la 	$a0, entradaString	#Salva a string no endereço $a0
 	li	$a1, 100		#Tamanho da string
@@ -169,17 +197,26 @@ OPÇÃO4:
 		sb $t3, 0($a0) 			#$t3 recebe uma letra de um endereco atras
 		j LOOP_OPÇÃO4			#Volta pro loop
 		
-	FIM_OPÇÃO4:				#imprime a string alterada
+	FIM_OPÇÃO4:	
+		#Print mensagem
+		li $v0, 4
+		la $a0, retornoString
+		syscall 
+		#imprime a string alterada
 		li $v0 , 4
 		la, $a0, entradaString
 		syscall
 		j LOOP_MENU
 OPÇÃO5:
+	#Print mensagem
+	li $v0, 4
+	la $a0, digitarString
+	syscall 
 	li 	$v0, 8			#Código do syscall de leitura de string
 	la 	$a0, entradaString	#Salva a string no endereço $a0
 	li	$a1, 100		#Tamanho da string
 	syscall
-	addi $a3, $a3, 32 	#$a3 recebe o valor do caractere espaco
+	addi $a3, $a3, 32 		#$a3 recebe o valor do caractere espaco
 	LOOP_OPÇÃO5:	
 		lb $t8, 0($a0) 			#%t8 recebe um caractere
 		beq $t8, $zero, FIM_OPÇÃO5	#Se %t8 for nulo pula para o FIMOPÇÃO5
@@ -199,56 +236,71 @@ OPÇÃO5:
 		beq $t9, $zero, LOOP_OPÇÃO5 	#Se $t9 for nulo pula para o LOOPOPÇÃO5
 		j ESPACO_LOOP_OPÇÃO5		#Se não continua nesse loop salvando procurando por espaço e salvando o valor da frente do espaço
 	
-	FIM_OPÇÃO5:				#imprime a string alterada
+	FIM_OPÇÃO5:
+		#Print mensagem
+		li $v0, 4
+		la $a0, retornoString
+		syscall 
+		#imprime a string alterada
 		li $v0 , 4
 		la $a0, entradaString
 		syscall
 		j LOOP_MENU
 OPÇÃO6:
+	#Print mensagem
+	li $v0, 4
+	la $a0, digitarString
+	syscall 
 	li 	$v0, 8			#Código do syscall de leitura de string
 	la 	$a0, entradaString	#Salva a string no endereço $a0
-	li	$a1, 100		#Tamanho da string
+	li	$a1, 50			#Tamanho da string
+	syscall 
+	#Print mensagem
+	li $v0, 4
+	la $a0, digitarString
 	syscall 
 	lb $t0, ($a0)
 	li 	$v0, 8			#Código do syscall de leitura de string
-	la 	$a2, substring		#Salva a string no endereço $a0
-	li	$a1, 100		#Tamanho da string
+	la 	$a0, substring		#Salva a string no endereço $a0
+	li	$a1, 50			#Tamanho da string
 	syscall
+	la $a2, substring
+	la $a1, entradaString
 	lb $t1, ($a2)		#Salva em $t1 o primeiro caractere de $a2 (substring)
 	PERCORRE_STRING:
-		lb $t0, ($a0)				#Salva em $t0 um caractere de $a0
+		lb $t0, ($a1)				#Salva em $t0 um caractere de $a0
 		beq $t0, $t1, PRIMEIRA_LETRA_IGUAL	#Se o caractere de $t0 for igual ao de $t1 pula para o PRIMEIRA_LETRA_IGUAL
-		beq $t0, 0, NAO_É_SUBSTRING		#Se $t0 for nulo, pula para não é uma substring
-		addi $a0, $a0, 1 
+		beq $t0, 10, NAO_É_SUBSTRING		#Se $t0 for nulo, pula para não é uma substring
+		addi $a1, $a1, 1 
 		j PERCORRE_STRING
 	PRIMEIRA_LETRA_IGUAL:
-		la $a3, 1($a0)		#Da um load do caractere em $ao para $a3
+		la $a3, 1($a1)		#Da um load do caractere em $ao para $a3
 	ACHOU:				
-		addi $a0, $a0, 1 	#Incrementa para o próximo caractere
-		addi $a2, $a2, 1	#Incrementa para o próximo caractere
-		lb $t0, ($a0)		#Da um load do caractere em $t0
-		lb $t1, ($a2)		#Da um load do caractere em $t1
-		beq $t1, 0, É_SUBSTRING		#Se chegou no final da string pula para É_SUBSTRING
-		beq $t0, 0, NAO_É_SUBSTRING	#Se o caractere em $t0 é nulo, pula para NÃO_É_SUBSTRING
+		addi $a1, $a1, 1 		#Incrementa para o próximo caractere
+		addi $a2, $a2, 1		#Incrementa para o próximo caractere
+		lb $t0, ($a1)			#Da um load do caractere em $t0
+		lb $t1, ($a2)			#Da um load do caractere em $t1
+		beq $t1, 10, É_SUBSTRING	#Se chegou no final da string pula para É_SUBSTRING
+		beq $t0, 10, NAO_É_SUBSTRING	#Se o caractere em $t0 é nulo, pula para NÃO_É_SUBSTRING
 		bne $t0, $t1, NÃO_ACHOU		#Se %t0 e $t1 são diferente pula para NÃO_ACHOU
 		j ACHOU				#Loop do achou
 		
 	NÃO_ACHOU:
-		la $a0, 0($a3)
+		la $a1, 0($a3)
 		la $a2, substring
 		lb $t1, ($a2)
 		j PERCORRE_STRING	
 	
 	NAO_É_SUBSTRING:
 		li $v0, 4
-		la $a0, nachou
+		la $a0, ñSubstringMensagem
 		syscall
 		li $v0, 10
-		syscall
+		j LOOP_MENU
 	É_SUBSTRING:
 		li $v0, 4
-		la $a0, achou
+		la $a0, éSubstringMensagem
 		syscall
 		li $v0, 10
-		syscall
+		j LOOP_MENU
 FIM:
