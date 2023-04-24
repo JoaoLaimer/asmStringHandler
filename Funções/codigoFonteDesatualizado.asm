@@ -1,16 +1,16 @@
 .data 
 	#Variaveis menu
-	menu: 		.asciiz "\n-----------ASM.STRING.HANDLER-----------\n (1) Colocar todas letras em minuscula;\n (2) Colocar todas letras em maiuscula;\n (3) Inverter string\n (4) Capitalizar string;\n (5) Remover espaço(s) de uma string;\n (6) Verificar se é substring;\n (7) Sair;\n Digite sua uma opção:"
+	menu: 			.asciiz "\n-----------ASM.STRING.HANDLER-----------\n (1) Colocar todas letras em minuscula;\n (2) Colocar todas letras em maiuscula;\n (3) Inverter string\n (4) Capitalizar string;\n (5) Remover espaço(s) de uma string;\n (6) Verificar se é substring;\n (7) Sair;\n Digite sua uma opção:"
 	#Variaveis para uso da string
-	stringAlterada: .space 100	#Tamanho do espaço de memória para a string
-	entradaString: .space 50
-	entradaStringTeste: .space 50
-	substring: .space 50
+	stringAlterada: 	.space 100	#Tamanho do espaço de memória para a string
+	entradaString: 		.space 50
+	entradaStringTeste: 	.space 50
+	substring: 		.space 50
 	#Variaveis de mensagens
-	digitarString: .asciiz 		"Digite uma string: "
-	retornoString: .asciiz 		"String alterada: "
-	éSubstringMensagem: .asciiz 	"É substring!"
-	ñSubstringMensagem: .asciiz 	"Não é substring!"
+	digitarString: 		.asciiz 	"Digite uma string: "
+	retornoString: 		.asciiz 	"String alterada: "
+	éSubstringMensagem: 	.asciiz 	"É substring!"
+	ñSubstringMensagem: 	.asciiz 	"Não é substring!"
 
 .text
 	li $s1, 1  			#Opção de saída do menu
@@ -24,11 +24,10 @@ LOOP_MENU:
 	#Print das linhas do MENU
 	li $v0, 4
 	la $a0, menu
-	syscall 		#Print menu
-	
+	syscall 		
+	#Chamada de qual opção o usuario deve escolher
 	li $v0, 5
 	syscall
-	
 	#Verificações da opção escolhida
 	beq $v0, $s1, OPÇÃO1	#Se $v0 = 1, pula para a opção 1
 	beq $v0, $s2, OPÇÃO2	#Se $v0 = 2, pula para a opção 2
@@ -37,23 +36,24 @@ LOOP_MENU:
 	beq $v0, $s5, OPÇÃO5	#Se $v0 = 5, pula para a opção 5
 	beq $v0, $s6, OPÇÃO6	#Se $v0 = 6, pula para a opção 6
 	beq $v0, $s7, FIM	#Se $v0 = 7, pula para o fim do program
-	j LOOP_MENU	
-OPÇÃO1:
+	j LOOP_MENU
+		
+OPÇÃO1: #Chamada função de colocar em minusculo
 	jal COLOCAR_EM_MINUSCULO
     	j LOOP_MENU
-OPÇÃO2:
+OPÇÃO2: #Chamada função de colocar em maiusculo
 	jal COLOCAR_EM_MAIUSCULO
     	j LOOP_MENU
-OPÇÃO3:
+OPÇÃO3: #Chamada função que inverte a string
 	jal INVERTER_STRING
     	j LOOP_MENU
-OPÇÃO4:
+OPÇÃO4: #Chamada função que capitaliza a string
 	jal CAPITALIZAR_STRING
     	j LOOP_MENU
-OPÇÃO5:
+OPÇÃO5: #Chamada função que remove os espaços da string
 	jal REMOVER_ESPAÇOS_STRING
     	j LOOP_MENU
-OPÇÃO6:
+OPÇÃO6: #Chamada função que verifica se existe uma substring 
 	jal VERIFICAR_SUBSTRING
     	j LOOP_MENU
 
@@ -120,7 +120,7 @@ COLOCAR_EM_MAIUSCULO:
 		blt 	$s0, 97, LETRA_MAIUSCULA			#Se for menor que 97, não é um caracter válido e pula para o proximo caractere
 		bgt 	$s0, 122, ITERAÇÃO_COLOCAR_EM_MAIUSCULO	#Se for maior que 122, não é um caracter válido e pula para o proximo caractere
 		addi 	$s0, $s0, -32					#Substrai -32 para colocar a letra em maiusculo
-		sb 	$s0, ($t0)					#Salva o valor de $s0 em $a0
+		sb 	$s0, ($t0)					#Salva o valor de $s0 em $t0
 		j ITERAÇÃO_COLOCAR_EM_MAIUSCULO				#Pula para a interação
 	
 	LETRA_MAIUSCULA:
@@ -202,7 +202,7 @@ CAPITALIZAR_STRING:
 	la 	$a0, entradaString	#Salva a string no endereço $a0
 	li	$a1, 100		#Tamanho da string
 	syscall
-	addi $a3, $a3, 32 	#a3 recebe o valor do caractere espaco
+	addi $a3, $a3, 32 		#$a3 recebe o valor do caractere espaco
 	
 	lb $t8, 0($a0) 				#t8 recebe a primeira letra
 	sle $t7, $t8, 90  			#Se já for MAIUSCULO, set $t1 com 1
@@ -218,7 +218,7 @@ CAPITALIZAR_STRING:
 		j LOOP_CAPITALIZAR_STRING			#Volta pro loop
 		
 	ESPACO_CAPITALIZAR_STRING:
-		addi $a0 , $a0, 1 		#Soma um em $a0 para ir para o próximo caractere (Pula o espaço no caso)
+		addi $a0 , $a0, 1 				#Soma um em $a0 para ir para o próximo caractere (Pula o espaço no caso)
 		
 	MAIUSCULO_CAPITALIZAR_STRING:
 		lb $t3, 0($a0) 					#$t3 recebe a letra
@@ -319,13 +319,13 @@ VERIFICAR_SUBSTRING:
 		addi $a1, $a1, 1 
 		j PERCORRE_STRING
 	PRIMEIRA_LETRA_IGUAL:
-		la $a3, 1($a1)		#Da um load do caractere em $a1 para $a3
+		la $a3, 1($a1)			#Da um load do caractere em $a1 para $a3
 	ACHOU:				
 		addi $a1, $a1, 1 		#Incrementa para o próximo caractere
 		addi $a2, $a2, 1		#Incrementa para o próximo caractere
 		lb $t0, ($a1)			#Da um load do caractere em $t0
 		lb $t1, ($a2)			#Da um load do caractere em $t1
-		beq $t1, 10, É_SUBSTRING		#Se chegou no final da string pula para É_SUBSTRING
+		beq $t1, 10, É_SUBSTRING	#Se chegou no final da string pula para É_SUBSTRING
 		beq $t0, 10, NAO_É_SUBSTRING	#Se o caractere em $t0 é nulo, pula para NÃO_É_SUBSTRING
 		bne $t0, $t1, NÃO_ACHOU		#Se %t0 e $t1 são diferente pula para NÃO_ACHOU
 		j ACHOU				#Loop do achou
@@ -338,7 +338,7 @@ VERIFICAR_SUBSTRING:
 	
 	NAO_É_SUBSTRING:
 		li $v0, 4
-		la $t0, ñSubstringMensagem 		#Endereço da mensagem
+		la $t0, ñSubstringMensagem 			#Endereço da mensagem
 		LOOP_MENSAGEM_ÑSUB:
 			lb $t1, 0($t0)				#Carrega um caractere da mensagem
 			beq $t1, $zero, FIM_MENSAGEM_ÑSUB	#Se o caractere for nulo, termina o loop
