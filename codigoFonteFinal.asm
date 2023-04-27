@@ -36,7 +36,8 @@ LOOP_MENU:
 	beq $v0, $s4, OPÇÃO4	#Se $v0 = 4, pula para a opção 4
 	beq $v0, $s5, OPÇÃO5	#Se $v0 = 5, pula para a opção 5
 	beq $v0, $s6, OPÇÃO6	#Se $v0 = 6, pula para a opção 6
-	beq $v0, $s7, FIM	#Se $v0 = 7, pula para o fim do program
+	beq $v0, $s7, FIM	#Se $v0 = 7, pula para o fim do programa
+	jal LIMPA_STRING_ALTERADA
 	j LOOP_MENU	
 OPÇÃO1:
 	jal COLOCAR_EM_MINUSCULO
@@ -139,7 +140,6 @@ COLOCAR_EM_MAIUSCULO:
 		li 	$v0, 4
 		la 	$a0, entradaString
 		syscall
-		sb $zero, ($a0)
 		jr $ra
 		
 INVERTER_STRING:
@@ -181,13 +181,8 @@ INVERTER_STRING:
 		li $v0, 4
 		la $a0, stringAlterada
 		syscall
-		LIMPA_STRING_ALTERADA_3:
-			sb $zero, ($a0)       			#Armazena o valor 0 na posicao apontada por $a0
-			addi $a0, $a0, 1      			#Incrementa em 1 o endereço da string para ir para o próximo caractere
-			lb $t1, 0($a0)        			#Carrega o próximo caractere da string
-			bnez $t1, LIMPA_STRING_ALTERADA_3 	#Se o caractere for diferente de zero, continua o loop
-		sb $zero, ($a0)
 		jr $ra
+		
 CAPITALIZAR_STRING:
 	sb $zero, stringAlterada
 	#Print mensagem
@@ -214,9 +209,7 @@ CAPITALIZAR_STRING:
 		j LOOP_CAPITALIZAR_STRING			#Volta pro loop
 		
 	ESPACO_CAPITALIZAR_STRING:
-		addi $a0 , $a0, 1				#Soma um em $a0 para ir para o próximo caractere (Pula o espaço no caso)
-		lb $t3, 0($a0)
-		beq $t3, 32, ESPACO_CAPITALIZAR_STRING		
+		addi $a0 , $a0, 1 		#Soma um em $a0 para ir para o próximo caractere (Pula o espaço no caso)
 		
 	MAIUSCULO_CAPITALIZAR_STRING:
 		lb $t3, 0($a0) 					#$t3 recebe a letra
@@ -236,7 +229,6 @@ CAPITALIZAR_STRING:
 		li $v0 , 4
 		la $a0, entradaString
 		syscall
-		sb $zero, ($a0)
 		jr $ra
 		
 REMOVER_ESPAÇOS_STRING:
@@ -277,13 +269,7 @@ REMOVER_ESPAÇOS_STRING:
 		li $v0 , 4
 		la $a0, entradaString
 		syscall
-		LIMPA_STRING_ALTERADA_5:
-			sb $zero, ($a0)       			#Armazena o valor 0 na posicao apontada por $a0
-			addi $a0, $a0, 1      			#Incrementa em 1 o endereço da string para ir para o próximo caractere
-			lb $t1, 0($a0)        			#Carrega o próximo caractere da string em $t1
-			bnez $t1, LIMPA_STRING_ALTERADA_5  	#Se o caractere for diferente de zero, continua o loop
 		li $t3, 0
-		sb $zero, ($a0)
 		jr $ra
 		
 VERIFICAR_SUBSTRING:
@@ -347,7 +333,6 @@ VERIFICAR_SUBSTRING:
 			j LOOP_MENSAGEM_ÑSUB			#Continua o loop
 	FIM_MENSAGEM_ÑSUB:
 		syscall
-		#sb $zero, ($a0)
 		jr $ra
 	É_SUBSTRING:
 		la $t0, éSubstringMensagem
@@ -361,6 +346,12 @@ VERIFICAR_SUBSTRING:
 			j LOOP_MENSAGEM_ÉSUB			#Continua o loop
 	FIM_MENSAGEM_ÉSUB:
 		syscall
-		#sb $zero, ($a0)
 		jr $ra
+		
+LIMPA_STRING_ALTERADA:
+			sb $zero, ($a0)       			#Armazena o valor 0 na posicao apontada por $a0
+			addi $a0, $a0, 1      			#Incrementa em 1 o endereço da string para ir para o próximo caractere
+			lb $t1, 0($a0)        			#Carrega o próximo caractere da string
+			bnez $t1, LIMPA_STRING_ALTERADA		#Se o caractere for diferente de zero, continua o loop
+			jr $ra
 FIM:
