@@ -210,7 +210,8 @@ CAPITALIZAR_STRING:
 		
 	ESPACO_CAPITALIZAR_STRING:
 		addi $a0 , $a0, 1 		#Soma um em $a0 para ir para o próximo caractere (Pula o espaço no caso)
-		
+		lb $t3, 0($a0)
+		beq $t3, 32, ESPACO_CAPITALIZAR_STRING
 	MAIUSCULO_CAPITALIZAR_STRING:
 		lb $t3, 0($a0) 					#$t3 recebe a letra
 		sle $t7, $t3, 90  				#Se já for MAIUSCULO, set $t7 com 1
