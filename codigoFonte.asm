@@ -68,25 +68,23 @@ COLOCAR_EM_MINUSCULO:
 	li	$a1, 100		#Tamanho da string
 	syscall
 	
-	la $t0, stringAlterada 		#Endereço da stringAlterada
-	la $t1, entradaString		#Salva nesse endenreço a string digitada pelo usuario
+	la $a3, entradaString		#Salva nesse endenreço a string digitada pelo usuario
 	
 	LOOP_COLOCAR_EM_MINUSCULO:
-		lbu 	$s0, ($t1)				#Le o primeiro caractere da string no registrador $s1
-		beq 	$s0, $zero, FIM_COLOCAR_EM_MINUSCULO	#Verifica se o caractere não é vazio, se for pula para o final do código, se não
-		blt 	$s0, 122, LETRA_MINUSCULA		#Se for menor que 97, não é um caracter válido e pula para o proximo caractere
+		lbu 	$t1, ($a3)				#Le o primeiro caractere da string no registrador $s1
+		beq 	$t1, 10, FIM_COLOCAR_EM_MINUSCULO	#Verifica se o caractere não é vazio, se for pula para o final do código, se não
+		blt 	$t1, 122, LETRA_MINUSCULA		#Se for menor que 97, não é um caracter válido e pula para o proximo caractere
 
 	LETRA_MINUSCULA:
-		blt 	$s0, 65, ITERAÇÃO_COLOCAR_EM_MINUSCULO
-		bgt 	$s0, 90, ITERAÇÃO_COLOCAR_EM_MINUSCULO
-		addi 	$s0, $s0, 32				#Soma 32 para colocar a letra em minusculo
-		sb 	$s0, ($t0)
+		blt 	$t1, 65, ITERAÇÃO_COLOCAR_EM_MINUSCULO
+		bgt 	$t1, 90, ITERAÇÃO_COLOCAR_EM_MINUSCULO
+		addi 	$t1, $t1, 32				#Soma 32 para colocar a letra em minusculo
+		sb 	$t1, ($a3)
 		j ITERAÇÃO_COLOCAR_EM_MINUSCULO
 		
 	ITERAÇÃO_COLOCAR_EM_MINUSCULO:
-		sb 	$s0, ($t0)		#Salva o valor de $s0 em $a0
-		addi 	$t0, $t0, 1		#Incrementa em 1 o valor na memória para ir para o próximo caracter 
-		addi 	$t1, $t1, 1
+		sb 	$t1, ($a3)		#Salva o valor de $s0 em $a0
+		addi 	$a3, $a3, 1		#Incrementa em 1 o valor na memória para ir para o próximo caracter 
 		j LOOP_COLOCAR_EM_MINUSCULO
 	
 	FIM_COLOCAR_EM_MINUSCULO:
@@ -96,7 +94,7 @@ COLOCAR_EM_MINUSCULO:
 		syscall 		
 		#imprime a string alterada
 		li 	$v0, 4
-		la 	$a0, stringAlterada
+		la 	$a0, entradaString
 		syscall 
 		sb $zero, ($a0)
 		jr $ra
@@ -111,27 +109,25 @@ COLOCAR_EM_MAIUSCULO:
 	li	$a1, 100		#Tamanho da string
 	syscall
 	
-	la $t0, stringAlterada 		#Endereço da stringAlterada
-	la $t1, entradaString		#Salva nesse endenreço a string digitada pelo usuario
+	la $a3, entradaString		#Salva nesse endenreço a string digitada pelo usuario
 	
 	LOOP_COLOCAR_EM_MAIUSCULO:
-		lbu 	$s0, ($t1)					#Le o primeiro caractere da string no registrador $s1
-		beq 	$s0, $zero, FIM_COLOCAR_EM_MAIUSCULO		#Verifica se o caractere não é vazio, se for pula para o final do código, se não
-		blt 	$s0, 97, LETRA_MAIUSCULA			#Se for menor que 97, não é um caracter válido e pula para o proximo caractere
-		bgt 	$s0, 122, ITERAÇÃO_COLOCAR_EM_MAIUSCULO	#Se for maior que 122, não é um caracter válido e pula para o proximo caractere
-		addi 	$s0, $s0, -32					#Substrai -32 para colocar a letra em maiusculo
-		sb 	$s0, ($t0)					#Salva o valor de $s0 em $a0
+		lbu	$t1, ($a3)					#Le o primeiro caractere da string no registrador $a3
+		beq 	$t1, 10, FIM_COLOCAR_EM_MAIUSCULO		#Verifica se o caractere não é vazio, se for pula para o final do código, se não
+		blt 	$t1, 97, LETRA_MAIUSCULA			#Se for menor que 97, não é um caracter válido e pula para o proximo caractere
+		bgt 	$t1, 122, ITERAÇÃO_COLOCAR_EM_MAIUSCULO	#Se for maior que 122, não é um caracter válido e pula para o proximo caractere
+		addi 	$t1, $t1, -32					#Substrai -32 para colocar a letra em maiusculo
+		sb 	$t1, ($a3)					#Salva o valor de $a3 em $t1
 		j ITERAÇÃO_COLOCAR_EM_MAIUSCULO				#Pula para a interação
 	
 	LETRA_MAIUSCULA:
-		blt 	$s0, 65, ITERAÇÃO_COLOCAR_EM_MAIUSCULO		#Se for uma letra entre 65 e 90 na tabela ASCII
-		bgt 	$s0, 90, ITERAÇÃO_COLOCAR_EM_MAIUSCULO		#quer dizer que a letra já é maiuscula, então eu pulo ela indo direto para iteração
-		sb 	$s0, ($t0)					#Salva o valor de $s0 em $t0
+		blt 	$t1, 65, ITERAÇÃO_COLOCAR_EM_MAIUSCULO		#Se for uma letra entre 65 e 90 na tabela ASCII
+		bgt 	$t1, 90, ITERAÇÃO_COLOCAR_EM_MAIUSCULO		#quer dizer que a letra já é maiuscula, então eu pulo ela indo direto para iteração
+		sb 	$t1, ($a3)					#Salva o valor de $t1 em $a3
 		j ITERAÇÃO_COLOCAR_EM_MAIUSCULO
 	
 	ITERAÇÃO_COLOCAR_EM_MAIUSCULO:
-		addi 	$t0, $t0, 1		#Incrementa em 1 o valor na memória para ir para o próximo caracter 
-		addi 	$t1, $t1, 1
+		addi 	$a3, $a3, 1		#Incrementa em 1 o valor na memória para ir para o próximo caracter 
 		j LOOP_COLOCAR_EM_MAIUSCULO
 	
 	FIM_COLOCAR_EM_MAIUSCULO:
@@ -141,7 +137,7 @@ COLOCAR_EM_MAIUSCULO:
 		syscall 
 		#imprime a string alterada
 		li 	$v0, 4
-		la 	$a0, stringAlterada
+		la 	$a0, entradaString
 		syscall
 		sb $zero, ($a0)
 		jr $ra
@@ -218,7 +214,9 @@ CAPITALIZAR_STRING:
 		j LOOP_CAPITALIZAR_STRING			#Volta pro loop
 		
 	ESPACO_CAPITALIZAR_STRING:
-		addi $a0 , $a0, 1 		#Soma um em $a0 para ir para o próximo caractere (Pula o espaço no caso)
+		addi $a0 , $a0, 1				#Soma um em $a0 para ir para o próximo caractere (Pula o espaço no caso)
+		lb $t3, 0($a0)
+		beq $t3, 32, ESPACO_CAPITALIZAR_STRING		
 		
 	MAIUSCULO_CAPITALIZAR_STRING:
 		lb $t3, 0($a0) 					#$t3 recebe a letra
